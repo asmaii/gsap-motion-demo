@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asma Hammami — GSAP Motion Demo</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<style>
+*{box-sizing:border-box}
+:root{
+  --navy:#06162f;--blue:#0b4fb3;--electric:#3da8ff;
+  --ice:#eaf5ff;--white:#fff;--muted:#9bb0ca;
+}
+html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif}
+body{
+  color:var(--white);
+  background:
+    radial-gradient(circle at 75% 18%,rgba(40,132,255,.28),transparent 25%),
+    radial-gradient(circle at 20% 80%,rgba(24,92,210,.22),transparent 30%),
+    linear-gradient(135deg,#041127,#09275b 55%,#06162f);
+  overflow-x:hidden;
+}
+.page{width:min(1180px,100%);margin:auto;padding:34px 24px 50px}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:55px}
+.brand{font-weight:800;letter-spacing:.02em}
+.brand span{display:block;font-size:10px;letter-spacing:.18em;color:#70c1ff;margin-top:3px}
+.nav a{color:#b8cbe1;text-decoration:none;font-size:13px;margin-left:25px}
+.signature{font-size:13px;color:#8ed0ff;letter-spacing:.12em;text-transform:uppercase}
+.hero{display:grid;grid-template-columns:1fr 1.05fr;gap:50px;align-items:center}
+.copy h1{
+  font-size:clamp(46px,7vw,78px);line-height:.92;letter-spacing:-.065em;
+  margin:12px 0 22px;max-width:650px
+}
+.copy h1 em{font-style:normal;color:#55b7ff}
+.copy p{max-width:500px;color:#a9bdd5;font-size:17px;line-height:1.65}
+.cta{
+  margin-top:25px;border:0;border-radius:14px;padding:14px 21px;
+  color:white;background:linear-gradient(135deg,#0755bd,#28a6ff);
+  font-weight:800;cursor:pointer;box-shadow:0 12px 35px rgba(20,126,255,.28)
+}
+.scene{
+  position:relative;height:500px;perspective:1200px;
+}
+.glow{
+  position:absolute;width:360px;height:360px;border-radius:50%;left:50%;top:50%;
+  transform:translate(-50%,-50%);background:rgba(35,137,255,.18);filter:blur(45px)
+}
+.orbit{
+  position:absolute;inset:55px 20px;border:1px solid rgba(91,184,255,.22);
+  border-radius:50%;transform:rotate(-16deg);will-change:transform
+}
+.orbit.two{inset:95px 65px;transform:rotate(27deg);border-color:rgba(104,159,255,.18)}
+.dot{
+  position:absolute;width:11px;height:11px;border-radius:50%;background:#6bc4ff;
+  box-shadow:0 0 25px #45adff
+}
+.dot.d1{left:16%;top:30%}.dot.d2{right:12%;top:48%}.dot.d3{left:29%;bottom:17%}
+.device{
+  position:absolute;left:50%;top:50%;width:min(510px,90%);height:315px;
+  transform:translate(-50%,-50%) rotateX(8deg) rotateY(-9deg) rotateZ(-2deg);
+  border:1px solid rgba(160,216,255,.35);border-radius:23px;
+  background:linear-gradient(145deg,rgba(18,71,137,.95),rgba(5,25,61,.97));
+  box-shadow:0 35px 90px rgba(0,0,0,.45),0 0 60px rgba(34,145,255,.17);
+  transform-style:preserve-3d;will-change:transform
+}
+.device:before{
+  content:"";position:absolute;inset:0;border-radius:23px;
+  background:linear-gradient(110deg,rgba(255,255,255,.13),transparent 35%,transparent 65%,rgba(75,170,255,.08));
+  pointer-events:none
+}
+.screen{position:absolute;inset:22px;border-radius:14px;background:#071a39;overflow:hidden}
+.screen-head{height:45px;border-bottom:1px solid rgba(140,196,255,.14);display:flex;align-items:center;padding:0 15px;gap:7px}
+.screen-head i{width:7px;height:7px;border-radius:50%;background:#4eabff}
+.ui-title{margin:24px 25px 8px;font-size:27px;font-weight:800}
+.ui-text{margin:0 25px;color:#7895b6;font-size:12px;max-width:270px;line-height:1.6}
+.ui-card{
+  position:absolute;right:22px;top:100px;width:145px;height:105px;border-radius:13px;
+  background:linear-gradient(145deg,#1768cb,#0b315f);border:1px solid rgba(140,210,255,.25);
+  box-shadow:0 12px 30px rgba(0,0,0,.25)
+}
+.ui-line{height:7px;border-radius:99px;background:#4eabff;margin:15px 15px 0;width:70%}
+.ui-line.small{margin-top:9px;width:48%;background:#6285a9}
+.floating{
+  position:absolute;padding:13px 16px;border-radius:14px;
+  background:rgba(15,62,123,.72);border:1px solid rgba(111,196,255,.3);
+  backdrop-filter:blur(12px);font-size:12px;box-shadow:0 15px 35px rgba(0,0,0,.22);
+  will-change:transform
+}
+.float1{left:1%;top:15%}.float2{right:0;bottom:15%}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:62px}
+.feature{
+  padding:22px;border-radius:18px;background:rgba(255,255,255,.055);
+  border:1px solid rgba(145,202,255,.13);cursor:pointer;will-change:transform;
+  transform-style:preserve-3d
+}
+.feature b{display:block;font-size:14px;margin-bottom:8px}
+.feature p{margin:0;color:#8ea6c2;font-size:12px;line-height:1.5}
+.icon{display:grid;place-items:center;width:35px;height:35px;border-radius:11px;
+  background:rgba(55,164,255,.15);color:#6ec4ff;margin-bottom:15px;font-size:17px}
+.replay{
+  display:block;margin:30px auto 0;border:1px solid rgba(130,201,255,.35);
+  background:transparent;color:#bfe3ff;border-radius:99px;padding:11px 19px;cursor:pointer
+}
+.credit{text-align:center;color:#7189a6;font-size:12px;margin-top:28px}
+.credit strong{color:#9fd8ff}
+@media(max-width:820px){
+ .hero{grid-template-columns:1fr}.scene{height:430px}.features{grid-template-columns:1fr}
+ .nav a{display:none}
+}
+</style>
+</head>
+<body>
+<main class="page">
+<nav class="nav">
+  <div class="brand">AH<span>FRONT-END DEVELOPER</span></div>
+  <div><a href="#">Accueil</a><a href="#">Projets</a><a href="#">Contact</a></div>
+</nav>
+
+<section class="hero">
+  <div class="copy">
+    <div class="signature">GSAP Motion Demo</div>
+    <h1>Le mouvement au service de l'<em>expérience.</em></h1>
+    <p>Une démonstration interactive : timeline séquencée, parallaxe au survol, profondeur 3D et micro-interactions.</p>
+    <button class="cta">Explorer l'animation <span>→</span></button>
+  </div>
+
+  <div class="scene" id="scene">
+    <div class="glow"></div>
+    <div class="orbit"></div><div class="orbit two"></div>
+    <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div>
+
+    <div class="device" id="device">
+      <div class="screen">
+        <div class="screen-head"><i></i><i></i><i></i></div>
+        <div class="ui-title">Motion<br>with purpose.</div>
+        <p class="ui-text">Le mouvement attire le regard, crée une hiérarchie et accompagne l'interaction.</p>
+        <div class="ui-card"><div class="ui-line"></div><div class="ui-line small"></div><div class="ui-line small"></div></div>
+      </div>
+    </div>
+
+    <div class="floating float1">✦ Parallaxe</div>
+    <div class="floating float2">↗ Hover interaction</div>
+  </div>
+</section>
+
+<section class="features">
+ <article class="feature"><div class="icon">✦</div><b>Timeline complexe</b><p>Une séquence coordonnée pour créer une entrée progressive et naturelle.</p></article>
+ <article class="feature"><div class="icon">◈</div><b>Parallaxe au survol</b><p>Chaque couche réagit différemment au curseur pour créer de la profondeur.</p></article>
+ <article class="feature"><div class="icon">↗</div><b>Micro-interactions</b><p>Cartes, CTA et éléments visuels répondent avec des mouvements subtils.</p></article>
+</section>
+
+<button class="replay" id="replay">↻ Rejouer la timeline</button>
+<div class="credit">Démo créée par <strong>Asma Hammami</strong> · Front-End Developer</div>
+</main>
+
+<script>
+const scene = document.querySelector("#scene");
+const device = document.querySelector("#device");
+const orbit = document.querySelector(".orbit");
+const orbit2 = document.querySelector(".orbit.two");
+const float1 = document.querySelector(".float1");
+const float2 = document.querySelector(".float2");
+const dots = document.querySelectorAll(".dot");
+const features = document.querySelectorAll(".feature");
+const cta = document.querySelector(".cta");
+
+gsap.set([".copy .signature",".copy h1",".copy p",".cta",".device",".floating",".feature"],{opacity:0});
+gsap.set(".device",{scale:.82,y:55,rotationY:-25});
+gsap.set(".floating",{scale:.7,y:25});
+gsap.set(".feature",{y:45});
+
+const intro = gsap.timeline({defaults:{ease:"power3.out"}});
+
+intro
+ .to(".copy .signature",{opacity:1,y:0,duration:.45})
+ .to(".copy h1",{opacity:1,y:0,duration:.75},"-=.15")
+ .to(".copy p",{opacity:1,y:0,duration:.6},"-=.35")
+ .to(".cta",{opacity:1,y:0,scale:1,duration:.55},"-=.3")
+ .to(".device",{opacity:1,scale:1,y:0,rotationY:-9,duration:1.2,ease:"expo.out"},"-=.55")
+ .to(".floating",{opacity:1,scale:1,y:0,duration:.65,stagger:.15},"-=.7")
+ .to(".feature",{opacity:1,y:0,duration:.6,stagger:.13},"-=.35")
+ .fromTo(dots,{scale:0},{scale:1,duration:.5,stagger:.12,ease:"back.out(2)"},"-=.7");
+
+gsap.to(".orbit",{rotation:"+=360",duration:24,repeat:-1,ease:"none"});
+gsap.to(".orbit.two",{rotation:"-=360",duration:18,repeat:-1,ease:"none"});
+gsap.to(".dot",{y:"random(-14,14)",x:"random(-10,10)",duration:"random(2.2,3.8)",repeat:-1,yoyo:true,ease:"sine.inOut",stagger:.2});
+gsap.to(".float1",{y:-9,duration:2.5,repeat:-1,yoyo:true,ease:"sine.inOut"});
+gsap.to(".float2",{y:9,duration:2.9,repeat:-1,yoyo:true,ease:"sine.inOut"});
+
+/* PARALLAX : chaque couche bouge à une intensité différente */
+scene.addEventListener("mousemove",e=>{
+ const r=scene.getBoundingClientRect();
+ const x=(e.clientX-r.left)/r.width-.5;
+ const y=(e.clientY-r.top)/r.height-.5;
+
+ gsap.to(device,{rotationY:-9+x*16,rotationX:8-y*12,x:x*22,y:y*16,duration:.65,ease:"power3.out"});
+ gsap.to(orbit,{x:x*34,y:y*25,duration:.8,ease:"power2.out"});
+ gsap.to(orbit2,{x:x*-45,y:y*-30,duration:.9,ease:"power2.out"});
+ gsap.to(float1,{x:x*65,y:y*45,duration:.75,ease:"power2.out"});
+ gsap.to(float2,{x:x*-50,y:y*-35,duration:.85,ease:"power2.out"});
+ gsap.to(dots[0],{x:x*90,y:y*65,duration:.9,ease:"power2.out"});
+ gsap.to(dots[1],{x:x*-70,y:y*45,duration:1,ease:"power2.out"});
+ gsap.to(dots[2],{x:x*55,y:y*-55,duration:.8,ease:"power2.out"});
+});
+scene.addEventListener("mouseleave",()=>{
+ gsap.to(device,{rotationX:8,rotationY:-9,x:0,y:0,duration:1,ease:"elastic.out(1,.55)"});
+ gsap.to([orbit,orbit2,float1,float2,...dots],{x:0,y:0,duration:1,ease:"power3.out"});
+});
+
+/* Hover 3D des cartes */
+features.forEach(card=>{
+ card.addEventListener("mousemove",e=>{
+   const r=card.getBoundingClientRect();
+   const x=(e.clientX-r.left)/r.width-.5;
+   const y=(e.clientY-r.top)/r.height-.5;
+   gsap.to(card,{rotationY:x*12,rotationX:-y*10,z:12,y:-7,duration:.3,ease:"power2.out",
+     boxShadow:"0 22px 50px rgba(20,120,255,.16)"});
+ });
+ card.addEventListener("mouseleave",()=>{
+   gsap.to(card,{rotationX:0,rotationY:0,z:0,y:0,duration:.55,ease:"elastic.out(1,.55)",
+     boxShadow:"0 0 0 rgba(0,0,0,0)"});
+ });
+});
+
+/* CTA hover */
+cta.addEventListener("mouseenter",()=>{
+ gsap.to(cta,{scale:1.06,y:-3,duration:.25,ease:"power2.out"});
+ gsap.to(".cta span",{x:7,duration:.3,ease:"power2.out"});
+});
+cta.addEventListener("mouseleave",()=>{
+ gsap.to(cta,{scale:1,y:0,duration:.35,ease:"power2.out"});
+ gsap.to(".cta span",{x:0,duration:.3});
+});
+
+/* Rejouer */
+document.querySelector("#replay").addEventListener("click",()=>{
+ intro.restart();
+});
+</script>
+</body>
+</html>
