@@ -40,10 +40,6 @@ The demo combines different animation techniques to create hierarchy and depth:
 - Hover feedback to make interactions feel more natural
 - Continuous background motion to add subtle dynamism
 
-## 🚀 Live Demo
-
-👉 **[View the interactive demo](YOUR_LIVE_DEMO_URL)**
-
 ## 📂 Project Structure
 
 ```text
